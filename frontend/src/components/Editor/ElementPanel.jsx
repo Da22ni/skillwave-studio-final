@@ -39,23 +39,9 @@ const ElementPanel = () => {
   ];
 
   const handleDragStart = (e, elementType) => {
-    alert(`DRAG START: ${elementType}`);
-    
-    console.log('🚀 [DEBUG] DRAG START - Element type:', elementType);
-    console.log('🚀 [DEBUG] DRAG START - Event:', e);
-    console.log('🚀 [DEBUG] DRAG START - DataTransfer available:', !!e.dataTransfer);
-    
     console.debug(`🎯 Starting drag for element: ${elementType}`);
     e.dataTransfer.setData('elementType', elementType);
     e.dataTransfer.effectAllowed = 'copy';
-    
-    console.log('🚀 [DEBUG] DRAG START - setData completed for:', elementType);
-    
-    // Test if data was set correctly
-    const testData = e.dataTransfer.getData('elementType');
-    console.log('🚀 [DEBUG] DRAG START - Immediate getData test:', testData);
-    
-    alert(`DATA SET: ${testData || 'NULL!'}`);
     
     logAction(`Started dragging ${elementType} element`);
   };
