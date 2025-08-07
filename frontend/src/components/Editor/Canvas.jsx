@@ -39,7 +39,7 @@ const Canvas = () => {
     console.log('🎯 [DEBUG] Canvas drop event triggered');
     console.log('🎯 [DEBUG] Event object:', e);
 
-    const elementType = e.dataTransfer.getData('application/json');
+    const elementType = e.dataTransfer.getData('elementType');
     console.log('🎯 [DEBUG] Element type from dataTransfer:', elementType);
     
     if (!elementType) {
