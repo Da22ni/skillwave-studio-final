@@ -15,6 +15,7 @@ export const useEditorStore = create((set, get) => ({
   selectedElementId: null,
   viewMode: 'both', // 'canvas', 'code', 'both'
   currentProject: null,
+  userLevel: 'beginner',
   isDragging: false,
   canvasSize: { width: '100%', height: '600px' },
   
