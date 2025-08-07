@@ -91,7 +91,8 @@ const Editor = () => {
     
     // Show user level selector for new users
     const hasSeenLevelSelector = localStorage.getItem('skillwave-level-selected');
-    if (!hasSeenLevelSelector) {
+    // TEMPORARY: Always show selector for testing
+    if (true) { // Changed from: if (!hasSeenLevelSelector) {
       setEditorState(prev => ({ ...prev, showUserLevelSelector: true }));
     }
 
