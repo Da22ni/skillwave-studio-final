@@ -20,6 +20,8 @@ const AIAssistant = () => {
   const { t, i18n } = useTranslation();
   const { actions, getRecentActions } = useLogger();
   const { elements, selectedElement, currentProject } = useEditor();
+  const userLevel = useEditorStore(state => state.userLevel);
+  const setUserLevel = useEditorStore(state => state.setUserLevel);
   
   // 🧠 English: Enhanced state management for complete AI functionality
   // 💬 Español humano: Gestión de estado mejorada para funcionalidad completa de IA
