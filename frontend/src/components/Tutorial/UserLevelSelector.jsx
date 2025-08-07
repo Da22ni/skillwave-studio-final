@@ -15,7 +15,9 @@ import Modal from '../UI/Modal';
 
 const UserLevelSelector = ({ isOpen, onClose, onLevelSelect }) => {
   const { t } = useTranslation();
-  const [selectedLevel, setSelectedLevel] = useState('');
+  const userLevel = useEditorStore(state => state.userLevel);
+  const setUserLevel = useEditorStore(state => state.setUserLevel);
+  const [selectedLevel, setSelectedLevel] = useState(userLevel);
   const [showDetails, setShowDetails] = useState({});
 
   // 🧠 English: Define user levels with comprehensive learning paths
