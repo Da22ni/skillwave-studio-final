@@ -36,25 +36,42 @@ const Canvas = () => {
     e.stopPropagation();
     setDragOver(false);
 
-    const elementType = e.dataTransfer.getData('elementType');
-    if (!elementType) return;
+    console.log('🎯 [DEBUG] Canvas drop event triggered');
+    console.log('🎯 [DEBUG] Event object:', e);
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const elementType = e.dataTransfer.getData('application/json');
+    console.log('🎯 [DEBUG] Element type from dataTransfer:', elementType);
+    
+    if (!elementType) {
+      console.error('❌ [DEBUG] No element type data in drag transfer');
+      alert('ERROR: No element type data found');
+      return;
+    }
 
-    console.debug(`🎯 Dropped ${elementType} at position (${x}, ${y})`);
+    const canvasRect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - canvasRect.left;
+    const y = e.clientY - canvasRect.top;
+
+    console.log(`📍 [DEBUG] Drop position: x=${x}, y=${y}`);
+    console.log('📍 [DEBUG] Canvas rect:', canvasRect);
 
     // 🧠 English: Add element at drop position and log the action
     // 💬 Español humano: Agrega elemento en la posición de drop y registra la acción
     
     try {
+      console.log('🎯 [DEBUG] About to call addElement with:', { elementType, position: { x, y } });
+      console.log('🎯 [DEBUG] addElement function:', typeof addElement);
+      
       const newElement = addElement(elementType, { x, y });
+      console.log('✅ [DEBUG] Element added successfully:', newElement);
+      
       logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
-      console.debug('✅ Element added successfully:', newElement);
       return newElement;
     } catch (error) {
-      console.error('❌ Failed to add element:', error);
+      console.error('❌ [DEBUG] Failed to add element - FULL ERROR:', error);
+      console.error('❌ [DEBUG] Error message:', error.message);
+      console.error('❌ [DEBUG] Error stack:', error.stack);
+      alert('DROP ERROR: ' + error.message);
       logAction(`Failed to drop ${elementType} element: ${error.message}`);
     }
   };
