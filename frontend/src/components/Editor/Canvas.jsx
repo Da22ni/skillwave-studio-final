@@ -48,10 +48,15 @@ const Canvas = () => {
     // 🧠 English: Add element at drop position and log the action
     // 💬 Español humano: Agrega elemento en la posición de drop y registra la acción
     
-    const newElement = addElement(elementType, { x, y });
-    logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
-    
-    return newElement;
+    try {
+      const newElement = addElement(elementType, { x, y });
+      logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
+      console.debug('✅ Element added successfully:', newElement);
+      return newElement;
+    } catch (error) {
+      console.error('❌ Failed to add element:', error);
+      logAction(`Failed to drop ${elementType} element: ${error.message}`);
+    }
   };
 
   const handleCanvasClick = (e) => {
