@@ -13,7 +13,7 @@ El login con Google no funciona porque el dominio de deployment no está autoriz
 ### 1️⃣ OBTENER EL DOMINIO ACTUAL
 **Dominio actual de Skillwave Studio:**
 ```
-https://255ee2f1-bb5c-45f0-913f-dd41184a9a41.preview.emergentagent.com
+https://991d3252-d634-455f-b162-bf15ff2d3510.preview.emergentagent.com
 ```
 
 **⚠️ IMPORTANTE:** Este dominio cambia según el entorno:

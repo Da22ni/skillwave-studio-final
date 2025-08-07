@@ -105,7 +105,7 @@ Skillwave Studio es una plataforma educativa de diseño web visual completamente
 ### Variables de Entorno Configuradas:
 ```env
 # Frontend /.env
-REACT_APP_BACKEND_URL=https://255ee2f1-bb5c-45f0-913f-dd41184a9a41.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://991d3252-d634-455f-b162-bf15ff2d3510.preview.emergentagent.com
 REACT_APP_OPENAI_API_KEY=sk-proj-MxBC1P-[CONFIGURADA]
 REACT_APP_FIREBASE_API_KEY=AIzaSyAuLj8kNlL2jEg8qzUbM4WqusifB6ITdvM
 REACT_APP_FIREBASE_AUTH_DOMAIN=skillwave-studio.firebaseapp.com
