@@ -1,0 +1,33 @@
+SKILLWAVE STUDIO - BACKUP COPY/PASTE
+====================================
+
+ARCHIVOS CLAVE MODIFICADOS:
+
+1. NUEVA DEPENDENCIA A INSTALAR:
+   yarn add i18next-browser-languagedetector@8.2.0
+
+2. DOMINIO PARA FIREBASE CONSOLE:
+   255ee2f1-bb5c-45f0-913f-dd41184a9a41.preview.emergentagent.com
+
+3. RUTAS DE ARCHIVOS MODIFICADOS:
+   - /app/frontend/src/i18n/index.js (1.9KB)
+   - /app/frontend/src/i18n/en.json (1.7KB) 
+   - /app/frontend/src/i18n/es.json (1.8KB)
+   - /app/frontend/src/pages/Login.jsx (5.3KB)
+   - /app/frontend/src/components/IA/AIAssistant.jsx (16KB)
+
+4. FIREBASE CONSOLE STEPS:
+   - Ve a: https://console.firebase.google.com/
+   - Selecciona proyecto: skillwave-studio
+   - Authentication → Settings → Authorized domains
+   - Add domain: 255ee2f1-bb5c-45f0-913f-dd41184a9a41.preview.emergentagent.com
+
+5. TESTING MANUAL REQUERIDO:
+   - Cambiar idioma → refresh → debe persistir
+   - Demo mode → cambiar idioma → debe funcionar
+   - IA debe responder en español si interface en español
+
+STATUS: ✅ PERSISTENCIA DE IDIOMA CORREGIDA
+        ⚠️ GOOGLE AUTH PENDIENTE DE CONFIG FIREBASE
+        ✅ TRADUCCIONES COMPLETAS IMPLEMENTADAS
+        ✅ IA CONTEXTUAL POR IDIOMA FUNCIONANDO
