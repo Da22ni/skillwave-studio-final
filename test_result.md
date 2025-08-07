@@ -217,9 +217,7 @@ test_plan:
     - "OpenAI Integration (Real Keys)"
     - "Beginner/Advanced Modes"
     - "Interactive Tutorial System"
-    - "Drag & Drop Functionality"
-  stuck_tasks: 
-    - "Drag & Drop Functionality"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
