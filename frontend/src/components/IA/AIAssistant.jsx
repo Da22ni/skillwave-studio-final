@@ -10,6 +10,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLogger } from '../../hooks/useLogger';
 import { useEditor } from '../../hooks/useEditor';
+import { useEditorStore } from '../../store/useEditorStore';
 import { explainUserAction, generateCodeSuggestion, askAI } from '../../services/openai';
 import { logDebug, logError, logInteraction } from '../../debug/report';
 import Button from '../UI/Button';
