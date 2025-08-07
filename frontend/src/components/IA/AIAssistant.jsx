@@ -216,7 +216,7 @@ const AIAssistant = () => {
   };
 
   const handleUserLevelChange = (level) => {
-    setAiState(prev => ({ ...prev, userLevel: level }));
+    setUserLevel(level);
     logInteraction('ai_user_level_change', { level });
     console.debug(`🤖 [AIAssistant] User level changed to: ${level}`);
   };
