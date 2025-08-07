@@ -80,6 +80,11 @@ export const useEditorStore = create((set, get) => ({
     });
   },
 
+  setUserLevel: (level) => {
+    console.debug(`👤 User level set to: ${level}`);
+    set({ userLevel: level });
+  },
+
   clearCanvas: () => {
     console.debug('🧹 Canvas cleared');
     set({ 
