@@ -20,21 +20,18 @@ const Canvas = () => {
   const { getCanvasStyle } = useResponsiveStore();
 
   const handleDragOver = (e) => {
-    console.debug('🎯 [Canvas] dragOver event triggered', e.type);
     e.preventDefault();
     e.stopPropagation();
     setDragOver(true);
   };
 
   const handleDragLeave = (e) => {
-    console.debug('🎯 [Canvas] dragLeave event triggered', e.type);
     e.preventDefault();
     e.stopPropagation();
     setDragOver(false);
   };
 
   const handleDrop = (e) => {
-    console.debug('🎯 [Canvas] drop event triggered!', e.type);
     e.preventDefault();
     e.stopPropagation();
     setDragOver(false);
@@ -48,8 +45,6 @@ const Canvas = () => {
       elementType = e.dataTransfer.getData('application/json');
     }
     
-    console.debug('🎯 Element type from dataTransfer:', elementType);
-    
     if (!elementType) {
       console.error('❌ No element type data found in drag transfer');
       logAction('Failed to drop element: No element type data found');
@@ -60,16 +55,12 @@ const Canvas = () => {
     const x = e.clientX - canvasRect.left;
     const y = e.clientY - canvasRect.top;
 
-    console.debug(`📍 Drop position: x=${x}, y=${y}`);
-
     // 🧠 English: Add element at drop position and log the action
     // 💬 Español humano: Agrega elemento en la posición de drop y registra la acción
     
     try {
-      console.debug('🎯 Adding element:', elementType, 'at position:', { x, y });
-      
       const newElement = addElement(elementType, { x, y });
-      console.debug('✅ Element added successfully:', newElement?.id);
+      console.debug('✅ Element added to canvas:', newElement?.id);
       
       logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
       return newElement;
