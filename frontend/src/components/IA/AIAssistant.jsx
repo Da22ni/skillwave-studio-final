@@ -34,7 +34,6 @@ const AIAssistant = () => {
     codeRequest: '',
     conversationHistory: [],
     aiPersonality: 'encouraging', // encouraging, technical, casual
-    userLevel: 'beginner', // beginner, intermediate, advanced
     showAdvancedOptions: false
   });
 
