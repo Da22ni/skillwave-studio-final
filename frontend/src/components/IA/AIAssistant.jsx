@@ -234,7 +234,7 @@ const AIAssistant = () => {
               {t('editor.aiHelper')}
             </h3>
             <p className="text-xs text-gray-600">
-              {aiState.userLevel} mode • {aiState.aiPersonality} style
+              {userLevel} mode • {aiState.aiPersonality} style
             </p>
           </div>
         </div>
