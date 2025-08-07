@@ -39,6 +39,8 @@ const ElementPanel = () => {
   ];
 
   const handleDragStart = (e, elementType) => {
+    alert(`DRAG START: ${elementType}`);
+    
     console.log('🚀 [DEBUG] DRAG START - Element type:', elementType);
     console.log('🚀 [DEBUG] DRAG START - Event:', e);
     console.log('🚀 [DEBUG] DRAG START - DataTransfer available:', !!e.dataTransfer);
@@ -52,6 +54,8 @@ const ElementPanel = () => {
     // Test if data was set correctly
     const testData = e.dataTransfer.getData('elementType');
     console.log('🚀 [DEBUG] DRAG START - Immediate getData test:', testData);
+    
+    alert(`DATA SET: ${testData || 'NULL!'}`);
     
     logAction(`Started dragging ${elementType} element`);
   };
