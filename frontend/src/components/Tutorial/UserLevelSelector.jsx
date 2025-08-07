@@ -85,8 +85,15 @@ const UserLevelSelector = ({ isOpen, onClose, onLevelSelect }) => {
 
   const handleConfirm = () => {
     const level = userLevels.find(l => l.id === selectedLevel);
-    if (level && onLevelSelect) {
-      onLevelSelect(level);
+    if (level) {
+      console.debug(`👤 User level confirmed: ${selectedLevel}`);
+      
+      // Update global state
+      setUserLevel(selectedLevel);
+      
+      if (onLevelSelect) {
+        onLevelSelect(level);
+      }
       onClose();
     }
   };
