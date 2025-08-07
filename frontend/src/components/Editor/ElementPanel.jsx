@@ -63,7 +63,7 @@ const ElementPanel = () => {
           <div
             key={element.type}
             className="group cursor-move"
-            draggable
+            draggable="true"
             onDragStart={(e) => handleDragStart(e, element.type)}
           >
             <div className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200">
