@@ -378,9 +378,9 @@ const AIAssistant = () => {
           <div className="grid grid-cols-2 gap-1">
             {quickActions
               .filter(action => 
-                aiState.userLevel === 'beginner' ? 
+                userLevel === 'beginner' ? 
                   ['styling', 'concept', 'export'].includes(action.category) :
-                  aiState.userLevel === 'intermediate' ?
+                  userLevel === 'intermediate' ?
                     !['concept'].includes(action.category) :
                     action.category !== 'concept'
               )
