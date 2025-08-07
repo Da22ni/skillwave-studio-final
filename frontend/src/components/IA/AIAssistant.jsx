@@ -70,7 +70,7 @@ const AIAssistant = () => {
         elements: elements,
         selectedElement: selectedElement,
         projectElementCount: elements.length,
-        userLevel: aiState.userLevel,
+        userLevel: userLevel,
         hasProject: !!currentProject,
         language: i18n.language === 'es' ? 'Spanish' : 'English'
       };
