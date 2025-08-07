@@ -1,0 +1,56 @@
+{
+  "auth": {
+    "loginTitle": "Bienvenido a Skillwave Studio",
+    "loginSubtitle": "Crea sitios web visuales con asistencia de IA",
+    "loginButton": "Ingresar con Google",
+    "demoButton": "Probar Modo Demo",
+    "orText": "o",
+    "loginSuccess": "¡Inicio de sesión exitoso!",
+    "loginError": "Error al iniciar sesión. Inténtalo de nuevo.",
+    "logout": "Cerrar Sesión",
+    "footer": "Hecho con ❤️ por Skillwave Studio"
+  },
+  "dashboard": {
+    "title": "Mis Proyectos",
+    "createNew": "Crear Nuevo Proyecto",
+    "projectsEmpty": "Aún no hay proyectos. ¡Crea el primero!",
+    "lastModified": "Última modificación",
+    "openProject": "Abrir Proyecto",
+    "deleteProject": "Eliminar Proyecto",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este proyecto?"
+  },
+  "editor": {
+    "canvas": "Lienzo",
+    "code": "Código",
+    "both": "Ambos",
+    "desktop": "Escritorio",
+    "tablet": "Tablet",
+    "mobile": "Móvil",
+    "addElement": "Agregar Elemento",
+    "textBlock": "Bloque de Texto",
+    "buttonBlock": "Botón",
+    "imageBlock": "Imagen",
+    "export": "Exportar Proyecto",
+    "save": "Guardar Proyecto",
+    "aiHelper": "Asistente IA",
+    "logger": "Registro de Actividad"
+  },
+  "elements": {
+    "text": "Elemento de Texto",
+    "button": "Elemento Botón",
+    "image": "Elemento Imagen",
+    "properties": "Propiedades",
+    "content": "Contenido",
+    "color": "Color",
+    "fontSize": "Tamaño de Fuente",
+    "delete": "Eliminar Elemento"
+  },
+  "export": {
+    "title": "Exportar Proyecto",
+    "description": "Descarga tu proyecto como archivos HTML/CSS",
+    "filename": "Nombre del Proyecto",
+    "download": "Descargar ZIP",
+    "success": "¡Proyecto exportado exitosamente!",
+    "error": "Error al exportar. Inténtalo de nuevo."
+  }
+}

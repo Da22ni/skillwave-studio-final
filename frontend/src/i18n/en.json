@@ -1,0 +1,56 @@
+{
+  "auth": {
+    "loginTitle": "Welcome to Skillwave Studio",
+    "loginSubtitle": "Create visual websites with AI assistance",
+    "loginButton": "Sign in with Google",
+    "demoButton": "Try Demo Mode",
+    "orText": "or",
+    "loginSuccess": "Login successful!",
+    "loginError": "Login failed. Please try again.",
+    "logout": "Sign Out",
+    "footer": "Made with ❤️ by Skillwave Studio"
+  },
+  "dashboard": {
+    "title": "My Projects",
+    "createNew": "Create New Project",
+    "projectsEmpty": "No projects yet. Create your first one!",
+    "lastModified": "Last modified",
+    "openProject": "Open Project",
+    "deleteProject": "Delete Project",
+    "confirmDelete": "Are you sure you want to delete this project?"
+  },
+  "editor": {
+    "canvas": "Canvas",
+    "code": "Code",
+    "both": "Both",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "addElement": "Add Element",
+    "textBlock": "Text Block",
+    "buttonBlock": "Button",
+    "imageBlock": "Image",
+    "export": "Export Project",
+    "save": "Save Project",
+    "aiHelper": "AI Assistant",
+    "logger": "Activity Logger"
+  },
+  "elements": {
+    "text": "Text Element",
+    "button": "Button Element", 
+    "image": "Image Element",
+    "properties": "Properties",
+    "content": "Content",
+    "color": "Color",
+    "fontSize": "Font Size",
+    "delete": "Delete Element"
+  },
+  "export": {
+    "title": "Export Project",
+    "description": "Download your project as HTML/CSS files",
+    "filename": "Project Name",
+    "download": "Download ZIP",
+    "success": "Project exported successfully!",
+    "error": "Export failed. Please try again."
+  }
+}
