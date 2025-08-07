@@ -289,11 +289,11 @@ const Editor = () => {
           <div className="flex-1 flex">
             <ElementPanel />
             <div className="flex-1 flex flex-col">
-              <div className="flex-1 flex">
-                <div className="flex-1">
+              <div className={`flex-1 ${twByView('flex-col', 'flex-col', 'flex')}`}>
+                <div className={`${twByView('flex-1', 'flex-1', 'flex-1')}`}>
                   <Canvas />
                 </div>
-                <div className="w-1/2 border-l border-gray-200">
+                <div className={`${twByView('flex-1 border-t', 'w-full border-t', 'w-1/2 border-l')} border-gray-200 ${twByView('max-h-[50vh] overflow-auto', 'max-h-[50vh] overflow-auto', '')}`}>
                   <CodePanel />
                 </div>
               </div>
