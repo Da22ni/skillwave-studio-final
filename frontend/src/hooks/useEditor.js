@@ -46,12 +46,18 @@ export function useEditor() {
       throwIf(!elementType, 'Element type is required', 'useEditor.handleAddElement');
       throwIf(!position, 'Position is required', 'useEditor.handleAddElement');
       
-      // Add element and validate result
+      // Add element directly from store (bypassing validation temporarily for debugging)
+      console.debug(`🎯 [useEditor] Calling store addElement with:`, elementType, position);
       const newElement = addElement(elementType, position);
+      console.debug(`🎯 [useEditor] Store returned:`, newElement);
       
-      // Validate the created element
-      if (safeValidate(validateElement, newElement, 'useEditor.handleAddElement')) {
-        console.debug(`✅ [useEditor] ${elementType} element validated successfully`);
+      // Validate the created element (but don't fail if validation fails - just warn)
+      try {
+        if (safeValidate(validateElement, newElement, 'useEditor.handleAddElement')) {
+          console.debug(`✅ [useEditor] ${elementType} element validated successfully`);
+        }
+      } catch (validationError) {
+        console.warn(`⚠️ [useEditor] Element validation failed but continuing:`, validationError.message);
       }
       
       // Log action for AI educational system
