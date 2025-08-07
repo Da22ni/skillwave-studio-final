@@ -41,9 +41,6 @@ const ElementPanel = () => {
   const handleDragStart = (e, elementType) => {
     console.debug(`🎯 Starting drag for element: ${elementType}`);
     
-    // Show user feedback
-    console.log(`🎯 INICIANDO DRAG: ${elementType.toUpperCase()}`);
-    
     // Set multiple data formats for better browser compatibility
     e.dataTransfer.setData('elementType', elementType);
     e.dataTransfer.setData('text/plain', elementType);
