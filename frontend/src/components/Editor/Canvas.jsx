@@ -36,15 +36,22 @@ const Canvas = () => {
     e.stopPropagation();
     setDragOver(false);
 
-    console.log('🎯 [DEBUG] Canvas drop event triggered');
-    console.log('🎯 [DEBUG] Event object:', e);
+    console.debug('🎯 Canvas drop event triggered');
 
-    const elementType = e.dataTransfer.getData('elementType');
-    console.log('🎯 [DEBUG] Element type from dataTransfer:', elementType);
+    // Try multiple dataTransfer formats to ensure compatibility
+    let elementType = e.dataTransfer.getData('elementType');
+    if (!elementType) {
+      elementType = e.dataTransfer.getData('text/plain');
+    }
+    if (!elementType) {
+      elementType = e.dataTransfer.getData('application/json');
+    }
+    
+    console.debug('🎯 Element type from dataTransfer:', elementType);
     
     if (!elementType) {
-      console.error('❌ [DEBUG] No element type data in drag transfer');
-      alert('ERROR: No element type data found');
+      console.error('❌ No element type data found in drag transfer');
+      logAction('Failed to drop element: No element type data found');
       return;
     }
 
@@ -52,26 +59,22 @@ const Canvas = () => {
     const x = e.clientX - canvasRect.left;
     const y = e.clientY - canvasRect.top;
 
-    console.log(`📍 [DEBUG] Drop position: x=${x}, y=${y}`);
-    console.log('📍 [DEBUG] Canvas rect:', canvasRect);
+    console.debug(`📍 Drop position: x=${x}, y=${y}`);
 
     // 🧠 English: Add element at drop position and log the action
     // 💬 Español humano: Agrega elemento en la posición de drop y registra la acción
     
     try {
-      console.log('🎯 [DEBUG] About to call addElement with:', { elementType, position: { x, y } });
-      console.log('🎯 [DEBUG] addElement function:', typeof addElement);
+      console.debug('🎯 Adding element:', elementType, 'at position:', { x, y });
       
       const newElement = addElement(elementType, { x, y });
-      console.log('✅ [DEBUG] Element added successfully:', newElement);
+      console.debug('✅ Element added successfully:', newElement?.id);
       
       logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
       return newElement;
+      
     } catch (error) {
-      console.error('❌ [DEBUG] Failed to add element - FULL ERROR:', error);
-      console.error('❌ [DEBUG] Error message:', error.message);
-      console.error('❌ [DEBUG] Error stack:', error.stack);
-      alert('DROP ERROR: ' + error.message);
+      console.error('❌ Failed to add element:', error.message);
       logAction(`Failed to drop ${elementType} element: ${error.message}`);
     }
   };
