@@ -51,6 +51,7 @@ const Canvas = () => {
     
     if (!elementType) {
       console.error('❌ No element type data found in drag transfer');
+      alert('❌ ERROR: No se encontró el tipo de elemento en el arrastre');
       logAction('Failed to drop element: No element type data found');
       return;
     }
@@ -69,12 +70,16 @@ const Canvas = () => {
       const newElement = addElement(elementType, { x, y });
       console.debug(`✅ [Canvas] Element ${elementType} added successfully:`, newElement?.id);
       
+      // Show success alert for user feedback
+      alert(`✅ ÉXITO: Elemento ${elementType} agregado con ID: ${newElement?.id}`);
+      
       logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
       return newElement;
       
     } catch (error) {
       console.error(`❌ [Canvas] Failed to add ${elementType} element:`, error.message);
       console.error(`❌ [Canvas] Error details:`, error);
+      alert(`❌ ERROR: Falló al agregar elemento ${elementType}: ${error.message}`);
       logAction(`Failed to drop ${elementType} element: ${error.message}`);
     }
   };
