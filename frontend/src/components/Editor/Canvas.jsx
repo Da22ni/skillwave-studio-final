@@ -65,7 +65,7 @@ const Canvas = () => {
   const canvasStyle = getCanvasStyle();
 
   return (
-    <div className="w-full h-full overflow-auto bg-gray-100 p-4">
+    <div className="max-w-[1200px] mx-auto max-h-[90vh] overflow-y-auto bg-gray-100 p-4">
       <div
         ref={canvasRef}
         className={`relative bg-white border-2 transition-all duration-200 ${
