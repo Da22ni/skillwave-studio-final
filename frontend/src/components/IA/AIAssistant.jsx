@@ -166,7 +166,7 @@ const AIAssistant = () => {
 
       const context = {
         elements: elements,
-        userLevel: aiState.userLevel,
+        userLevel: userLevel,
         selectedElement: selectedElement
       };
 
