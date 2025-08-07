@@ -20,23 +20,24 @@ const Canvas = () => {
   const { getCanvasStyle } = useResponsiveStore();
 
   const handleDragOver = (e) => {
+    console.debug('🎯 [Canvas] dragOver event triggered', e.type);
     e.preventDefault();
     e.stopPropagation();
     setDragOver(true);
   };
 
   const handleDragLeave = (e) => {
+    console.debug('🎯 [Canvas] dragLeave event triggered', e.type);
     e.preventDefault();
     e.stopPropagation();
     setDragOver(false);
   };
 
   const handleDrop = (e) => {
+    console.debug('🎯 [Canvas] drop event triggered!', e.type);
     e.preventDefault();
     e.stopPropagation();
     setDragOver(false);
-
-    console.debug('🎯 Canvas drop event triggered');
 
     // Try multiple dataTransfer formats to ensure compatibility
     let elementType = e.dataTransfer.getData('elementType');
