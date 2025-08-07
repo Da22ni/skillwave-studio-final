@@ -261,7 +261,7 @@ const AIAssistant = () => {
                   key={level}
                   onClick={() => handleUserLevelChange(level)}
                   className={`text-xs px-2 py-1 rounded ${
-                    aiState.userLevel === level
+                    userLevel === level
                       ? 'bg-purple-600 text-white'
                       : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                   }`}
