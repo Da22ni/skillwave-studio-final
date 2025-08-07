@@ -184,6 +184,18 @@ frontend:
         agent: "main"
         comment: "Tutorial adaptativo con seguimiento de progreso implementado"
 
+  - task: "Drag & Drop Functionality"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/Editor/Canvas.jsx"
+    stuck_count: 3
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Elements can be dragged but don't stick when dropped on canvas. Issue in handleDrop function and addElement execution. Enhanced debugging and multiple dataTransfer formats added. Store-level logging implemented."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
