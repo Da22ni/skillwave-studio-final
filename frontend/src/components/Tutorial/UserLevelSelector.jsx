@@ -6,7 +6,7 @@
 // 💬 Español humano:
 // Componente selector de nivel de usuario que determina la ruta de aprendizaje y complejidad del tutorial
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEditorStore } from '../../store/useEditorStore';
 import { logInteraction } from '../../debug/report';
