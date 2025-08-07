@@ -36,8 +36,6 @@ const Canvas = () => {
     e.stopPropagation();
     setDragOver(false);
 
-    console.debug('🎯 [Canvas] Drop event started');
-
     // Try multiple dataTransfer formats to ensure compatibility
     let elementType = e.dataTransfer.getData('elementType');
     if (!elementType) {
@@ -47,11 +45,8 @@ const Canvas = () => {
       elementType = e.dataTransfer.getData('application/json');
     }
     
-    console.debug(`🎯 [Canvas] Retrieved element type: "${elementType}"`);
-    
     if (!elementType) {
       console.error('❌ No element type data found in drag transfer');
-      alert('❌ ERROR: No se encontró el tipo de elemento en el arrastre');
       logAction('Failed to drop element: No element type data found');
       return;
     }
@@ -60,26 +55,18 @@ const Canvas = () => {
     const x = e.clientX - canvasRect.left;
     const y = e.clientY - canvasRect.top;
 
-    console.debug(`📍 [Canvas] Drop position for ${elementType}: x=${x}, y=${y}`);
-
     // 🧠 English: Add element at drop position and log the action
     // 💬 Español humano: Agrega elemento en la posición de drop y registra la acción
     
     try {
-      console.debug(`🎯 [Canvas] About to call addElement for: ${elementType}`);
       const newElement = addElement(elementType, { x, y });
-      console.debug(`✅ [Canvas] Element ${elementType} added successfully:`, newElement?.id);
-      
-      // Show success alert for user feedback
-      alert(`✅ ÉXITO: Elemento ${elementType} agregado con ID: ${newElement?.id}`);
+      console.debug('✅ Element added to canvas:', newElement?.id);
       
       logAction(`Dropped ${elementType} element on canvas at position (${Math.round(x)}, ${Math.round(y)})`);
       return newElement;
       
     } catch (error) {
-      console.error(`❌ [Canvas] Failed to add ${elementType} element:`, error.message);
-      console.error(`❌ [Canvas] Error details:`, error);
-      alert(`❌ ERROR: Falló al agregar elemento ${elementType}: ${error.message}`);
+      console.error('❌ Failed to add element:', error.message);
       logAction(`Failed to drop ${elementType} element: ${error.message}`);
     }
   };
