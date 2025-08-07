@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { useEditor } from '../hooks/useEditor';
 import { useLogger } from '../hooks/useLogger';
+import { twByView } from '../utils/twByView';
 import { loadProject, saveProject } from '../services/projects';
 import { logDebug, logError, logInteraction } from '../debug/report';
 
