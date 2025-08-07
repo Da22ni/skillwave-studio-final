@@ -40,7 +40,11 @@ const ElementPanel = () => {
 
   const handleDragStart = (e, elementType) => {
     console.debug(`🎯 Starting drag for element: ${elementType}`);
+    
+    // Set multiple data formats for better browser compatibility
     e.dataTransfer.setData('elementType', elementType);
+    e.dataTransfer.setData('text/plain', elementType);
+    e.dataTransfer.setData('application/json', JSON.stringify({ type: elementType }));
     e.dataTransfer.effectAllowed = 'copy';
     
     logAction(`Started dragging ${elementType} element`);
