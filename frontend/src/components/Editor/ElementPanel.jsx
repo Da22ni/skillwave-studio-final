@@ -47,11 +47,7 @@ const ElementPanel = () => {
     e.dataTransfer.setData('application/json', JSON.stringify({ type: elementType }));
     e.dataTransfer.effectAllowed = 'copy';
     
-    console.debug(`🎯 [ElementPanel] Data set in dataTransfer:`, {
-      elementType: e.dataTransfer.getData('elementType'),
-      textPlain: e.dataTransfer.getData('text/plain'),
-      effectAllowed: e.dataTransfer.effectAllowed
-    });
+    console.debug(`🎯 [ElementPanel] Data set in dataTransfer for: ${elementType}`);
     
     logAction(`Started dragging ${elementType} element`);
   };
