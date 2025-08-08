@@ -6,7 +6,22 @@
 // 💬 Español humano:
 // Sistema integral de reportes de salud para Skillwave Studio con métricas de rendimiento, seguimiento de errores y telemetría
 
-import { getTelemetryStats } from '../services/telemetry';
+// Safe telemetry import to avoid build issues
+let getTelemetryStats = () => ({
+  totalEvents: 0,
+  eventCounts: {},
+  queuedEvents: 0,
+  sessionId: 'unknown'
+});
+
+try {
+  const telemetryModule = require('../services/telemetry');
+  if (telemetryModule && telemetryModule.getTelemetryStats) {
+    getTelemetryStats = telemetryModule.getTelemetryStats;
+  }
+} catch (error) {
+  console.debug('Telemetry service not available in build context');
+}
 
 // Performance tracking
 let performanceData = {
