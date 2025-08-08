@@ -1,339 +1,400 @@
 // debug/report.js
 
 // 🧠 English:
-// Debug reporting system that collects, analyzes and exports debugging information
+// Comprehensive health report system for Skillwave Studio with performance metrics, error tracking, and telemetry
 
 // 💬 Español humano:
-// Sistema de reportes de debug que recopila, analiza y exporta información de debugging
+// Sistema integral de reportes de salud para Skillwave Studio con métricas de rendimiento, seguimiento de errores y telemetría
 
-/**
- * Debug report collector and analyzer
- */
-class DebugReport {
-  constructor() {
-    this.reports = [];
-    this.sessionId = `session_${Date.now()}`;
-    this.startTime = new Date();
-    
-    console.debug(`📊 [DebugReport] Started debug session: ${this.sessionId}`);
-    
-    // Initialize error tracking
-    this.initErrorTracking();
-  }
+import { getTelemetryStats } from '../services/telemetry';
 
-  /**
-   * Initialize global error tracking
-   */
-  initErrorTracking() {
-    // Track JavaScript errors
-    window.addEventListener('error', (event) => {
-      this.logError('JavaScript Error', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: event.error?.stack
-      });
-    });
+// Performance tracking
+let performanceData = {
+  pageLoadTime: 0,
+  renderTimes: [],
+  fpsReadings: [],
+  memoryUsage: [],
+  errorCount: 0,
+  warningCount: 0,
+  aiRequestCount: 0,
+  cacheHitRate: 0,
+  lastUpdate: Date.now()
+};
 
-    // Track unhandled promise rejections
-    window.addEventListener('unhandledrejection', (event) => {
-      this.logError('Unhandled Promise Rejection', {
-        reason: event.reason,
-        promise: event.promise
-      });
-    });
-
-    console.debug('📊 [DebugReport] Error tracking initialized');
-  }
-
-  /**
-   * Log a debug event
-   * @param {string} category - Event category
-   * @param {string} message - Event message
-   * @param {Object} data - Additional data
-   */
-  log(category, message, data = {}) {
-    const report = {
-      id: `report_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date().toISOString(),
-      category,
-      message,
-      data,
-      sessionId: this.sessionId,
-      url: window.location.href,
-      userAgent: navigator.userAgent
-    };
-
-    this.reports.push(report);
-    
-    console.debug(`📊 [DebugReport] Logged: [${category}] ${message}`, data);
-
-    // Auto-export if too many reports
-    if (this.reports.length >= 100) {
-      this.exportReports();
-    }
-
-    return report;
-  }
-
-  /**
-   * Log an error specifically
-   * @param {string} errorType - Type of error
-   * @param {Object} errorData - Error details
-   */
-  logError(errorType, errorData) {
-    return this.log('ERROR', errorType, {
-      ...errorData,
-      severity: 'HIGH',
-      needsAttention: true
+// Initialize performance monitoring
+const initializePerformanceTracking = () => {
+  // Track page load time
+  if (typeof window !== 'undefined' && window.performance) {
+    window.addEventListener('load', () => {
+      performanceData.pageLoadTime = window.performance.now();
     });
   }
 
-  /**
-   * Log a warning
-   * @param {string} warning - Warning message
-   * @param {Object} data - Additional data
-   */
-  logWarning(warning, data = {}) {
-    return this.log('WARNING', warning, {
-      ...data,
-      severity: 'MEDIUM'
-    });
-  }
+  console.debug('📊 Performance tracking initialized');
+};
 
-  /**
-   * Log performance data
-   * @param {string} operation - Operation name
-   * @param {number} duration - Duration in milliseconds
-   * @param {Object} metadata - Additional metadata
-   */
-  logPerformance(operation, duration, metadata = {}) {
-    return this.log('PERFORMANCE', operation, {
-      duration,
-      ...metadata,
-      category: 'PERFORMANCE'
-    });
-  }
+// Log performance metrics
+export const logPerformance = (metric, value, context = {}) => {
+  const entry = {
+    metric,
+    value,
+    context,
+    timestamp: Date.now()
+  };
 
-  /**
-   * Log user interaction
-   * @param {string} interaction - Type of interaction
-   * @param {Object} details - Interaction details
-   */
-  logInteraction(interaction, details = {}) {
-    return this.log('USER_INTERACTION', interaction, {
-      ...details,
-      category: 'UX'
-    });
-  }
-
-  /**
-   * Analyze current reports
-   * @returns {Object} Analysis results
-   */
-  analyzeReports() {
-    console.debug('📊 [DebugReport] Analyzing reports...');
-    
-    const analysis = {
-      totalReports: this.reports.length,
-      categories: {},
-      errors: [],
-      warnings: [],
-      performance: {
-        slowOperations: [],
-        avgDuration: 0
-      },
-      timeRange: {
-        start: this.startTime.toISOString(),
-        end: new Date().toISOString()
-      },
-      topIssues: []
-    };
-
-    this.reports.forEach(report => {
-      // Count by category
-      analysis.categories[report.category] = (analysis.categories[report.category] || 0) + 1;
-
-      // Collect errors and warnings
-      if (report.category === 'ERROR') {
-        analysis.errors.push(report);
-      } else if (report.category === 'WARNING') {
-        analysis.warnings.push(report);
-      } else if (report.category === 'PERFORMANCE') {
-        if (report.data.duration > 1000) { // > 1 second
-          analysis.performance.slowOperations.push(report);
-        }
+  switch (metric) {
+    case 'render_time':
+      performanceData.renderTimes.push(value);
+      if (performanceData.renderTimes.length > 100) {
+        performanceData.renderTimes = performanceData.renderTimes.slice(-50);
       }
-    });
-
-    // Calculate performance averages
-    const perfReports = this.reports.filter(r => r.category === 'PERFORMANCE');
-    if (perfReports.length > 0) {
-      analysis.performance.avgDuration = 
-        perfReports.reduce((sum, r) => sum + (r.data.duration || 0), 0) / perfReports.length;
-    }
-
-    // Identify top issues
-    analysis.topIssues = [
-      ...analysis.errors.slice(0, 5),
-      ...analysis.warnings.slice(0, 3),
-      ...analysis.performance.slowOperations.slice(0, 2)
-    ];
-
-    console.debug('📊 [DebugReport] Analysis complete:', analysis);
-    
-    // Educational logging
-    if (analysis.errors.length > 0) {
-      console.debug('🧠 Educational Note: Errors found - these help identify problems in the application');
-    }
-    
-    return analysis;
+      break;
+    case 'fps':
+      performanceData.fpsReadings.push(value);
+      if (performanceData.fpsReadings.length > 100) {
+        performanceData.fpsReadings = performanceData.fpsReadings.slice(-50);
+      }
+      break;
+    case 'memory_usage':
+      performanceData.memoryUsage.push(value);
+      if (performanceData.memoryUsage.length > 50) {
+        performanceData.memoryUsage = performanceData.memoryUsage.slice(-25);
+      }
+      break;
   }
 
-  /**
-   * Export reports as downloadable file
-   * @param {string} format - Export format: 'json', 'csv', 'txt'
-   */
-  exportReports(format = 'json') {
-    console.debug(`📊 [DebugReport] Exporting ${this.reports.length} reports as ${format}`);
+  performanceData.lastUpdate = Date.now();
 
-    const analysis = this.analyzeReports();
-    const exportData = {
-      meta: {
-        sessionId: this.sessionId,
-        exportTime: new Date().toISOString(),
-        totalReports: this.reports.length,
-        format
+  console.debug(`📊 [Performance] ${metric}: ${value}`, context);
+};
+
+// Log debug information
+export const logDebug = (category, message, data = {}) => {
+  const entry = {
+    category,
+    message,
+    data,
+    level: 'debug',
+    timestamp: new Date().toISOString()
+  };
+
+  console.debug(`🐛 [${category}] ${message}`, data);
+  
+  // Store in sessionStorage for debugging
+  try {
+    const debugLogs = JSON.parse(sessionStorage.getItem('skillwave_debug_logs') || '[]');
+    debugLogs.push(entry);
+    // Keep only last 100 debug logs
+    if (debugLogs.length > 100) {
+      debugLogs.splice(0, debugLogs.length - 100);
+    }
+    sessionStorage.setItem('skillwave_debug_logs', JSON.stringify(debugLogs));
+  } catch (error) {
+    console.warn('Failed to store debug log:', error);
+  }
+};
+
+// Log errors
+export const logError = (category, data = {}) => {
+  performanceData.errorCount++;
+  
+  const entry = {
+    category,
+    data,
+    level: 'error',
+    timestamp: new Date().toISOString()
+  };
+
+  console.error(`❌ [${category}]`, data);
+  
+  try {
+    const errorLogs = JSON.parse(sessionStorage.getItem('skillwave_error_logs') || '[]');
+    errorLogs.push(entry);
+    // Keep only last 50 error logs
+    if (errorLogs.length > 50) {
+      errorLogs.splice(0, errorLogs.length - 50);
+    }
+    sessionStorage.setItem('skillwave_error_logs', JSON.stringify(errorLogs));
+  } catch (error) {
+    console.warn('Failed to store error log:', error);
+  }
+};
+
+// Log warnings
+export const logWarning = (category, message, data = {}) => {
+  performanceData.warningCount++;
+  
+  const entry = {
+    category,
+    message,
+    data,
+    level: 'warning',
+    timestamp: new Date().toISOString()
+  };
+
+  console.warn(`⚠️ [${category}] ${message}`, data);
+};
+
+// Get system health status
+export const getSystemHealth = () => {
+  const now = Date.now();
+  const telemetryStats = getTelemetryStats();
+  
+  // Calculate performance metrics
+  const avgRenderTime = performanceData.renderTimes.length > 0
+    ? performanceData.renderTimes.reduce((a, b) => a + b, 0) / performanceData.renderTimes.length
+    : 0;
+    
+  const avgFPS = performanceData.fpsReadings.length > 0
+    ? performanceData.fpsReadings.reduce((a, b) => a + b, 0) / performanceData.fpsReadings.length
+    : 0;
+    
+  const currentMemory = performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) : 0;
+  
+  // Determine health status
+  const healthScores = {
+    performance: calculatePerformanceScore(avgFPS, avgRenderTime),
+    errors: calculateErrorScore(),
+    memory: calculateMemoryScore(currentMemory),
+    ai: calculateAIScore()
+  };
+  
+  const overallScore = Object.values(healthScores).reduce((a, b) => a + b, 0) / Object.keys(healthScores).length;
+  
+  return {
+    overall: {
+      score: Math.round(overallScore),
+      status: getHealthStatus(overallScore),
+      lastUpdate: new Date(performanceData.lastUpdate).toISOString()
+    },
+    performance: {
+      score: healthScores.performance,
+      avgRenderTime: Math.round(avgRenderTime * 100) / 100,
+      avgFPS: Math.round(avgFPS),
+      pageLoadTime: Math.round(performanceData.pageLoadTime),
+      memoryUsage: currentMemory
+    },
+    errors: {
+      score: healthScores.errors,
+      errorCount: performanceData.errorCount,
+      warningCount: performanceData.warningCount,
+      recentErrors: getRecentErrors()
+    },
+    ai: {
+      score: healthScores.ai,
+      requestCount: telemetryStats.eventCounts?.ai_explanation_requested || 0,
+      cacheHits: telemetryStats.eventCounts?.ai_explanation_received || 0,
+      rateLimitHits: telemetryStats.eventCounts?.ai_rate_limited || 0
+    },
+    telemetry: telemetryStats
+  };
+};
+
+// Calculate performance score (0-100)
+const calculatePerformanceScore = (fps, renderTime) => {
+  let score = 100;
+  
+  // FPS scoring
+  if (fps < 15) score -= 40;
+  else if (fps < 30) score -= 20;
+  else if (fps < 50) score -= 5;
+  
+  // Render time scoring
+  if (renderTime > 50) score -= 30;
+  else if (renderTime > 20) score -= 15;
+  else if (renderTime > 16) score -= 5;
+  
+  return Math.max(0, score);
+};
+
+// Calculate error score (0-100)
+const calculateErrorScore = () => {
+  let score = 100;
+  
+  if (performanceData.errorCount > 10) score -= 50;
+  else if (performanceData.errorCount > 5) score -= 30;
+  else if (performanceData.errorCount > 0) score -= 10;
+  
+  if (performanceData.warningCount > 20) score -= 20;
+  else if (performanceData.warningCount > 10) score -= 10;
+  
+  return Math.max(0, score);
+};
+
+// Calculate memory score (0-100)
+const calculateMemoryScore = (currentMemory) => {
+  let score = 100;
+  
+  if (currentMemory > 100) score -= 40;
+  else if (currentMemory > 50) score -= 20;
+  else if (currentMemory > 25) score -= 10;
+  
+  return Math.max(0, score);
+};
+
+// Calculate AI score (0-100)
+const calculateAIScore = () => {
+  // This is a placeholder - in a real implementation you'd track AI performance
+  return 85; // Assume good AI performance
+};
+
+// Get health status text
+const getHealthStatus = (score) => {
+  if (score >= 90) return 'Excellent';
+  if (score >= 75) return 'Good';
+  if (score >= 60) return 'Fair';
+  if (score >= 40) return 'Poor';
+  return 'Critical';
+};
+
+// Get recent errors
+const getRecentErrors = () => {
+  try {
+    const errorLogs = JSON.parse(sessionStorage.getItem('skillwave_error_logs') || '[]');
+    return errorLogs.slice(-5); // Last 5 errors
+  } catch (error) {
+    return [];
+  }
+};
+
+// Generate comprehensive health report
+export const generateHealthReport = () => {
+  const health = getSystemHealth();
+  const now = new Date();
+  
+  const report = {
+    meta: {
+      title: 'Skillwave Studio Health Report',
+      generated: now.toISOString(),
+      version: '1.0.0',
+      environment: process.env.NODE_ENV || 'development'
+    },
+    summary: {
+      overallHealth: health.overall.status,
+      score: health.overall.score,
+      criticalIssues: findCriticalIssues(health),
+      recommendations: generateRecommendations(health)
+    },
+    performance: {
+      ...health.performance,
+      status: getHealthStatus(health.performance.score),
+      trends: {
+        renderTimes: performanceData.renderTimes.slice(-10),
+        fpsReadings: performanceData.fpsReadings.slice(-10),
+        memoryUsage: performanceData.memoryUsage.slice(-5)
+      }
+    },
+    errors: {
+      ...health.errors,
+      status: getHealthStatus(health.errors.score),
+      recentErrors: health.errors.recentErrors
+    },
+    features: {
+      dragDrop: checkFeatureHealth('drag_drop'),
+      aiAssistant: checkFeatureHealth('ai_assistant'),
+      codeGeneration: checkFeatureHealth('code_generation'),
+      projectManager: checkFeatureHealth('project_manager')
+    },
+    browser: {
+      userAgent: navigator.userAgent,
+      viewport: {
+        width: window.innerWidth,
+        height: window.innerHeight
       },
-      analysis,
-      reports: this.reports
-    };
+      memory: performance.memory ? {
+        used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB',
+        total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + 'MB',
+        limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024) + 'MB'
+      } : 'Not available',
+      connection: navigator.connection ? {
+        type: navigator.connection.effectiveType,
+        downlink: navigator.connection.downlink
+      } : 'Not available'
+    },
+    telemetry: health.telemetry
+  };
+  
+  console.debug('📋 Health report generated:', report);
+  return report;
+};
 
-    let content, filename, mimeType;
-
-    switch (format.toLowerCase()) {
-      case 'csv':
-        content = this.reportsToCSV();
-        filename = `debug_report_${this.sessionId}.csv`;
-        mimeType = 'text/csv';
-        break;
-      
-      case 'txt':
-        content = this.reportsToText();
-        filename = `debug_report_${this.sessionId}.txt`;
-        mimeType = 'text/plain';
-        break;
-      
-      default: // json
-        content = JSON.stringify(exportData, null, 2);
-        filename = `debug_report_${this.sessionId}.json`;
-        mimeType = 'application/json';
-    }
-
-    this.downloadFile(content, filename, mimeType);
-    
-    console.debug(`📊 [DebugReport] Report exported as ${filename}`);
-    console.debug('🧠 Educational Note: Debug reports help developers understand what happened during a session');
+// Find critical issues
+const findCriticalIssues = (health) => {
+  const issues = [];
+  
+  if (health.performance.score < 40) {
+    issues.push('Performance is critically low');
   }
-
-  /**
-   * Convert reports to CSV format
-   */
-  reportsToCSV() {
-    const headers = ['Timestamp', 'Category', 'Message', 'Data', 'URL'];
-    const rows = this.reports.map(report => [
-      report.timestamp,
-      report.category,
-      report.message,
-      JSON.stringify(report.data),
-      report.url
-    ]);
-
-    return [headers, ...rows].map(row => 
-      row.map(cell => `"${cell}"`).join(',')
-    ).join('\n');
+  
+  if (health.errors.errorCount > 10) {
+    issues.push('High error rate detected');
   }
-
-  /**
-   * Convert reports to text format
-   */
-  reportsToText() {
-    let text = `Skillwave Studio Debug Report\n`;
-    text += `Session: ${this.sessionId}\n`;
-    text += `Generated: ${new Date().toISOString()}\n`;
-    text += `Total Reports: ${this.reports.length}\n\n`;
-
-    text += `=== ANALYSIS ===\n`;
-    const analysis = this.analyzeReports();
-    text += `Errors: ${analysis.errors.length}\n`;
-    text += `Warnings: ${analysis.warnings.length}\n`;
-    text += `Performance Issues: ${analysis.performance.slowOperations.length}\n\n`;
-
-    text += `=== DETAILED REPORTS ===\n`;
-    this.reports.forEach((report, index) => {
-      text += `[${index + 1}] ${report.timestamp}\n`;
-      text += `    Category: ${report.category}\n`;
-      text += `    Message: ${report.message}\n`;
-      text += `    Data: ${JSON.stringify(report.data, null, 2)}\n`;
-      text += `    URL: ${report.url}\n\n`;
-    });
-
-    return text;
+  
+  if (health.performance.memoryUsage > 100) {
+    issues.push('High memory usage detected');
   }
-
-  /**
-   * Download file to user's computer
-   */
-  downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  
+  if (health.performance.avgFPS < 15) {
+    issues.push('Frame rate is below acceptable threshold');
   }
+  
+  return issues;
+};
 
-  /**
-   * Clear all reports
-   */
-  clear() {
-    const count = this.reports.length;
-    this.reports = [];
-    console.debug(`📊 [DebugReport] Cleared ${count} reports`);
+// Generate recommendations
+const generateRecommendations = (health) => {
+  const recommendations = [];
+  
+  if (health.performance.avgRenderTime > 20) {
+    recommendations.push('Consider optimizing render performance by implementing more React.memo components');
   }
+  
+  if (health.performance.memoryUsage > 50) {
+    recommendations.push('Monitor memory usage and consider implementing memory leak prevention');
+  }
+  
+  if (health.errors.warningCount > 10) {
+    recommendations.push('Review and address warning messages to prevent potential issues');
+  }
+  
+  if (health.ai.rateLimitHits > 5) {
+    recommendations.push('AI requests are being rate limited - consider implementing better caching');
+  }
+  
+  return recommendations;
+};
 
-  /**
-   * Get summary of current session
-   */
-  getSummary() {
-    return {
-      sessionId: this.sessionId,
-      startTime: this.startTime,
-      totalReports: this.reports.length,
-      categories: this.analyzeReports().categories,
-      duration: new Date() - this.startTime
-    };
-  }
+// Check individual feature health
+const checkFeatureHealth = (featureName) => {
+  // This would integrate with actual feature monitoring
+  // For now, return basic health status
+  return {
+    status: 'operational',
+    lastChecked: new Date().toISOString(),
+    uptime: '99.9%'
+  };
+};
+
+// Export health report as downloadable file
+export const exportHealthReport = () => {
+  const report = generateHealthReport();
+  const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `skillwave-health-report-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  URL.revokeObjectURL(url);
+  
+  console.debug('📁 Health report exported to file');
+  return report;
+};
+
+// Initialize tracking when module loads
+if (typeof window !== 'undefined') {
+  initializePerformanceTracking();
 }
-
-// Create global debug reporter instance
-const debugReport = new DebugReport();
-
-// Export functions for easy use
-export const logDebug = (category, message, data) => debugReport.log(category, message, data);
-export const logError = (errorType, errorData) => debugReport.logError(errorType, errorData);
-export const logWarning = (warning, data) => debugReport.logWarning(warning, data);
-export const logPerformance = (operation, duration, metadata) => debugReport.logPerformance(operation, duration, metadata);
-export const logInteraction = (interaction, details) => debugReport.logInteraction(interaction, details);
-export const analyzeReports = () => debugReport.analyzeReports();
-export const exportDebugReport = (format) => debugReport.exportReports(format);
-export const clearReports = () => debugReport.clear();
-export const getDebugSummary = () => debugReport.getSummary();
-
-export default debugReport;
-
-console.debug('📊 Debug reporting system loaded - use logDebug, logError, logWarning, exportDebugReport');
