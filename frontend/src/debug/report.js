@@ -394,7 +394,153 @@ export const exportHealthReport = () => {
   return report;
 };
 
-// Initialize tracking when module loads
-if (typeof window !== 'undefined') {
-  initializePerformanceTracking();
-}
+// Log user interactions (compatibility function)
+export const logInteraction = (interaction, details = {}) => {
+  const entry = {
+    interaction,
+    details,
+    level: 'info',
+    timestamp: new Date().toISOString()
+  };
+
+  console.debug(`👤 [Interaction] ${interaction}`, details);
+  
+  // Also track as telemetry if available
+  try {
+    const { trackEvent, EVENTS } = require('../services/telemetry');
+    trackEvent(EVENTS.FEATURE_USED, { 
+      feature: interaction, 
+      context: 'user_interaction',
+      ...details 
+    });
+  } catch (error) {
+    // Telemetry not available, continue
+  }
+  
+  // Store in sessionStorage for debugging
+  try {
+    const interactionLogs = JSON.parse(sessionStorage.getItem('skillwave_interaction_logs') || '[]');
+    interactionLogs.push(entry);
+    // Keep only last 50 interaction logs
+    if (interactionLogs.length > 50) {
+      interactionLogs.splice(0, interactionLogs.length - 50);
+    }
+    sessionStorage.setItem('skillwave_interaction_logs', JSON.stringify(interactionLogs));
+  } catch (error) {
+    console.warn('Failed to store interaction log:', error);
+  }
+};
+
+// Get debug summary (compatibility function)
+export const getDebugSummary = () => {
+  try {
+    const debugLogs = JSON.parse(sessionStorage.getItem('skillwave_debug_logs') || '[]');
+    const errorLogs = JSON.parse(sessionStorage.getItem('skillwave_error_logs') || '[]');
+    const interactionLogs = JSON.parse(sessionStorage.getItem('skillwave_interaction_logs') || '[]');
+    
+    return {
+      totalDebugLogs: debugLogs.length,
+      totalErrors: errorLogs.length,
+      totalInteractions: interactionLogs.length,
+      recentDebugLogs: debugLogs.slice(-5),
+      recentErrors: errorLogs.slice(-3),
+      recentInteractions: interactionLogs.slice(-5),
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.warn('Failed to get debug summary:', error);
+    return {
+      totalDebugLogs: 0,
+      totalErrors: performanceData.errorCount,
+      totalInteractions: 0,
+      recentDebugLogs: [],
+      recentErrors: [],
+      recentInteractions: [],
+      timestamp: new Date().toISOString(),
+      error: error.message
+    };
+  }
+};
+
+// Export debug report (compatibility function)
+export const exportDebugReport = (format = 'json') => {
+  const healthReport = generateHealthReport();
+  const debugSummary = getDebugSummary();
+  
+  const combinedReport = {
+    ...healthReport,
+    debugSummary,
+    exportFormat: format,
+    exportedAt: new Date().toISOString()
+  };
+  
+  if (format === 'json') {
+    const blob = new Blob([JSON.stringify(combinedReport, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `skillwave-debug-report-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    URL.revokeObjectURL(url);
+    
+    console.debug('📁 Debug report exported as JSON');
+  } else if (format === 'text') {
+    // Export as text format
+    const textReport = generateTextReport(combinedReport);
+    const blob = new Blob([textReport], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `skillwave-debug-report-${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    URL.revokeObjectURL(url);
+    
+    console.debug('📁 Debug report exported as text');
+  }
+  
+  return combinedReport;
+};
+
+// Generate text version of report
+const generateTextReport = (report) => {
+  let text = `SKILLWAVE STUDIO DEBUG REPORT\n`;
+  text += `Generated: ${report.meta.generated}\n`;
+  text += `Environment: ${report.meta.environment}\n\n`;
+  
+  text += `OVERALL HEALTH: ${report.summary.overallHealth} (Score: ${report.summary.score})\n\n`;
+  
+  if (report.summary.criticalIssues.length > 0) {
+    text += `CRITICAL ISSUES:\n`;
+    report.summary.criticalIssues.forEach(issue => {
+      text += `- ${issue}\n`;
+    });
+    text += '\n';
+  }
+  
+  text += `PERFORMANCE:\n`;
+  text += `- Status: ${report.performance.status}\n`;
+  text += `- Average FPS: ${report.performance.avgFPS}\n`;
+  text += `- Average Render Time: ${report.performance.avgRenderTime}ms\n`;
+  text += `- Memory Usage: ${report.performance.memoryUsage}MB\n\n`;
+  
+  text += `ERRORS:\n`;
+  text += `- Error Count: ${report.errors.errorCount}\n`;
+  text += `- Warning Count: ${report.errors.warningCount}\n\n`;
+  
+  if (report.summary.recommendations.length > 0) {
+    text += `RECOMMENDATIONS:\n`;
+    report.summary.recommendations.forEach(rec => {
+      text += `- ${rec}\n`;
+    });
+  }
+  
+  return text;
+};
