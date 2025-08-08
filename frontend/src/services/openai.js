@@ -43,6 +43,7 @@ console.debug('🤖 OpenAI Educational AI service initialized with cost protecti
  */
 export const explainUserAction = async (action, context = {}) => {
   const startTime = Date.now();
+  const costGuard = getCostGuard();
   
   try {
     console.debug(`🤖 [explainUserAction] Generating AI explanation for: ${action}`);
@@ -71,6 +72,43 @@ RESPONSE FORMAT:
 🚀 Next Tip: [Helpful suggestion for next step]
 
 Respond in ${context.language || 'English'}.`;
+
+    // Check with cost guard before making request
+    if (costGuard) {
+      const checkResult = costGuard.canMakeRequest(prompt, `action-${action}-${context.userLevel || 'beginner'}`);
+      
+      if (!checkResult.allowed) {
+        console.warn('🚫 AI request blocked by cost guard:', checkResult.reason);
+        const fallbackExplanation = generateFallbackExplanation(action, context);
+        const duration = Date.now() - startTime;
+        
+        logPerformance('ai_explain_user_action_fallback', duration, { 
+          reason: checkResult.reason,
+          action, 
+          cached: false 
+        });
+        
+        return {
+          explanation: fallbackExplanation,
+          source: 'cost_guard_fallback',
+          rateLimited: checkResult.reason === 'Rate limited',
+          retryAfter: checkResult.retryAfter
+        };
+      }
+      
+      // Check if we have a cached response
+      if (checkResult.cached) {
+        console.debug('💰 Using cached AI response');
+        const duration = Date.now() - startTime;
+        logPerformance('ai_explain_user_action_cache', duration, { action, cached: true });
+        
+        return {
+          explanation: checkResult.response,
+          source: 'cache',
+          cached: true
+        };
+      }
+    }
 
     // Check if OpenAI is available
     if (!openai) {
