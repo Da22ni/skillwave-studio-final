@@ -1,13 +1,23 @@
 // services/openai.js
 
 // 🧠 English:
-// OpenAI service for educational AI explanations and assistance with full pedagogical support
+// OpenAI service for educational AI explanations with cost guard, rate limiting and caching
 
 // 💬 Español humano:
-// Servicio de OpenAI para explicaciones educativas y asistencia con IA con soporte pedagógico completo
+// Servicio de OpenAI para explicaciones educativas con protección de costos, rate limiting y cache
 
 import OpenAI from 'openai';
 import { logDebug, logError, logPerformance } from '../debug/report';
+
+// Cost guard instance (will be initialized from components)
+let costGuardInstance = null;
+
+export const initializeCostGuard = (costGuard) => {
+  costGuardInstance = costGuard;
+  console.debug('✅ OpenAI service: Cost guard initialized');
+};
+
+const getCostGuard = () => costGuardInstance;
 
 // Initialize OpenAI client
 const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
@@ -23,7 +33,7 @@ const openai = apiKey && !apiKey.includes('your-') && !apiKey.includes('sk-your'
     })
   : null;
 
-console.debug('🤖 OpenAI Educational AI service initialized with full pedagogical support');
+console.debug('🤖 OpenAI Educational AI service initialized with cost protection');
 
 /**
  * Educational AI helper for explaining user actions with deep pedagogical context
