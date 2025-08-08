@@ -544,3 +544,8 @@ const generateTextReport = (report) => {
   
   return text;
 };
+
+// Initialize tracking when module loads
+if (typeof window !== 'undefined') {
+  initializePerformanceTracking();
+}
