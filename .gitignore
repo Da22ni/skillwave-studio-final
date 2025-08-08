@@ -30,16 +30,16 @@ next-env.d.ts
 dist/
 dist
 
-# Environment files (comprehensive coverage)
-.env
+# Environment files (ignore local overrides but keep deployment templates)
 .env.local
 .env.development.local
-.env.test.local
+.env.test.local  
 .env.production.local
-frontend/.env
-backend/.env
-*/.env
-**/.env
+.env.backup
+
+# Keep .env files for deployment but ignore local copies
+# frontend/.env
+# backend/.env
 
 *token.json*
 *credentials.json*
