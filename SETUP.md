@@ -3,48 +3,35 @@
 ## 🔐 Environment Variables Setup
 
 ### Frontend (.env)
-Copy `frontend/.env.example` to `frontend/.env` and fill in your real API keys:
+The repository includes basic `.env` files for deployment compatibility. For local development:
 
 ```bash
-cp frontend/.env.example frontend/.env
+cp frontend/.env.example frontend/.env.local  # Use .local for your real keys
 ```
-
-Required environment variables:
-- `REACT_APP_BACKEND_URL`: Your backend URL (provided by deployment platform)
-- `REACT_APP_OPENAI_API_KEY`: Get from https://platform.openai.com/api-keys
-- `REACT_APP_FIREBASE_*`: Get from Firebase Console (https://console.firebase.google.com)
-- `REACT_APP_SUPABASE_*`: Get from Supabase Dashboard (https://app.supabase.com)
 
 ### Backend (.env)
-Copy `backend/.env.example` to `backend/.env` and configure:
+The `.env` file uses system environment variables with fallbacks:
 
 ```bash
-cp backend/.env.example backend/.env
+MONGO_URL=${MONGO_URL:-mongodb://localhost:27017}  # Will use system MONGO_URL if available
+DB_NAME=${DB_NAME:-skillwave_studio}
 ```
 
-## 🚀 Quick Start
+## 🚀 Deployment Notes
 
-1. **Install Dependencies**:
-   ```bash
-   cd frontend && yarn install
-   cd ../backend && pip install -r requirements.txt
-   ```
+### Emergent Platform:
+- Set environment variables in the Emergent deployment dashboard
+- The app will automatically use system environment variables
+- No need to modify `.env` files - they serve as templates
 
-2. **Setup Environment Variables** (see above)
+### Production Environment Variables Needed:
+- `REACT_APP_BACKEND_URL`: Your deployed backend URL
+- `REACT_APP_OPENAI_API_KEY`: OpenAI API key
+- `REACT_APP_FIREBASE_*`: Firebase configuration
+- `MONGO_URL`: MongoDB Atlas connection string
+- `DB_NAME`: Database name
 
-3. **Run Development Servers**:
-   ```bash
-   # Backend
-   cd backend && python main.py
-   
-   # Frontend (in new terminal)
-   cd frontend && yarn start
-   ```
-
-## ⚠️ Security Notice
-
-- **NEVER commit .env files to Git**
-- Always use `.env.example` with fake values
-- Real API keys should only be in:
-  - Local development (.env files)
-  - Production deployment platform settings
+## 🔒 Security
+- `.env` files in repo contain only templates/fallbacks
+- Real API keys come from deployment platform environment variables
+- Never commit real keys to Git
