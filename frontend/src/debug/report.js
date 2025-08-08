@@ -405,16 +405,20 @@ export const logInteraction = (interaction, details = {}) => {
 
   console.debug(`👤 [Interaction] ${interaction}`, details);
   
-  // Also track as telemetry if available
-  try {
-    const { trackEvent, EVENTS } = require('../services/telemetry');
-    trackEvent(EVENTS.FEATURE_USED, { 
-      feature: interaction, 
-      context: 'user_interaction',
-      ...details 
-    });
-  } catch (error) {
-    // Telemetry not available, continue
+  // Also track as telemetry if available (using dynamic import to avoid build issues)
+  if (typeof window !== 'undefined') {
+    try {
+      // Try to get telemetry from window object if available
+      if (window.__skillwave_telemetry) {
+        window.__skillwave_telemetry.trackEvent('FEATURE_USED', { 
+          feature: interaction, 
+          context: 'user_interaction',
+          ...details 
+        });
+      }
+    } catch (error) {
+      // Telemetry not available, continue silently
+    }
   }
   
   // Store in sessionStorage for debugging
