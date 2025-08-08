@@ -567,4 +567,4 @@ const generateTextReport = (report) => {
 // Initialize tracking when module loads
 if (typeof window !== 'undefined') {
   initializePerformanceTracking();
-}
+}// Deployment fix Fri Aug  8 16:23:18 UTC 2025
