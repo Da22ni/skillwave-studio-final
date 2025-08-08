@@ -22,20 +22,14 @@ export const useEditorStore = create((set, get) => ({
   // Actions
   addElement: (elementType, position = { x: 50, y: 50 }) => {
     try {
-      console.debug(`🎯 [Store] addElement called for type: ${elementType}`, { elementType, position });
-      
-      const defaultProps = getDefaultProperties(elementType);
-      console.debug(`🎯 [Store] Default properties for ${elementType}:`, defaultProps);
-      
       const newElement = {
         id: uuidv4(),
         type: elementType,
         position,
-        properties: defaultProps,
+        properties: getDefaultProperties(elementType),
         timestamp: new Date().toISOString()
       };
       
-      console.debug(`🎯 [Store] Created element for ${elementType}:`, newElement);
       console.debug(`🧩 Added ${elementType} element to canvas`, newElement);
       
       set(state => {
@@ -43,15 +37,13 @@ export const useEditorStore = create((set, get) => ({
           elements: [...state.elements, newElement],
           selectedElementId: newElement.id
         };
-        console.debug(`🎯 [Store] State updated, total elements: ${newState.elements.length}`);
         return newState;
       });
       
-      console.debug(`🎯 [Store] Successfully added ${elementType} element with ID: ${newElement.id}`);
       return newElement;
       
     } catch (error) {
-      console.error(`❌ [Store] Error adding ${elementType} element:`, error);
+      console.error(`❌ [Store] Error in addElement:`, error);
       throw error;
     }
   },
